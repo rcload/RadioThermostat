@@ -1,23 +1,23 @@
 package com.w5xd.PocketThermostat;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.params.HttpParams;
-import org.apache.http.HttpEntity;
-import org.apache.http.protocol.HTTP;
-
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 
-import java.io.InputStreamReader;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
+
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /*
  * Class to represent operating state of the thermostat
@@ -154,8 +154,8 @@ public class ThermostatState
     public void doPostT(String uri, String obj, Resources res)
     {
         m_error = "";
-        HttpClient  httpclient = AndroidHttpClient.newInstance("Pocket Thermostat"); //new DefaultHttpClient(); 
-        
+        HttpClient  httpclient = AndroidHttpClient.newInstance("Pocket Thermostat");
+
         HttpParams params = httpclient.getParams();
         HttpConnectionParams.setConnectionTimeout(params,
                 SOCKET_CONNECT_TIMOUT_MSEC);
