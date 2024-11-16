@@ -1,12 +1,9 @@
 package com.w5xd.PocketThermostat;
 
-import java.text.NumberFormat;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,13 +11,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.widget.ArrayAdapter;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.text.NumberFormat;
 
 public class EditScheduleActivity extends Activity implements OnClickListener,
 		OnItemSelectedListener, OnTouchListener {
@@ -184,61 +183,52 @@ public class EditScheduleActivity extends Activity implements OnClickListener,
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
-        {
-            case R.id.menuSchedOptionsCopyToThermo:
-            {
-                if (this.validateEntries())
-                {
-                    updateScheduleFromCurrentDisplay();
-                    ((TextView) (findViewById(R.id.textViewSchedStatus)))
-                            .setText(getResources().getString(
-                                    R.string.msgReadingThermostat));
-                   new Delay2().execute(0);
-                }
-            }
-            return true;
+		int itemId = item.getItemId();
+		if(itemId == R.id.menuSchedOptionsCopyToThermo){
+			if (this.validateEntries())
+			{
+				updateScheduleFromCurrentDisplay();
+				((TextView) (findViewById(R.id.textViewSchedStatus)))
+						.setText(getResources().getString(
+								R.string.msgReadingThermostat));
+				new Delay2().execute(0);
+			}
+			return true;
+		} else if (itemId == R.id.menuSchedOptionsMakeLocalCopy) {
+			if (this.validateEntries())
+			{
+				updateScheduleFromCurrentDisplay();
+				SharedPreferences.Editor ed = getPreferences(
+						Context.MODE_PRIVATE).edit();
+				Json json = new Json();
+				if (m_whichSked == ThermostatSchedule.schedule_t.HEAT_SCHEDULE)
+				{
+					m_heatSched.toJson(json);
+					ed.putString("heatingSchedule", json.toString());
+				} else if (m_whichSked == ThermostatSchedule.schedule_t.COOL_SCHEDULE)
+				{
+					m_coolSched.toJson(json);
+					ed.putString("coolingSchedule", json.toString());
+				}
+				ed.commit();
+			}
+			return true;
+		} else if (itemId == R.id.menuSchedOptionsUseLocalCopy) {
+			SharedPreferences sp = getPreferences(Context.MODE_PRIVATE);
+			Json json = new Json();
+			if (m_whichSked == ThermostatSchedule.schedule_t.HEAT_SCHEDULE)
+			{
+				json.fromString(sp.getString("heatingSchedule", ""));
+				m_heatSched.fromJson(json, getResources());
+			} else if (m_whichSked == ThermostatSchedule.schedule_t.COOL_SCHEDULE)
+			{
+				json.fromString(sp.getString("coolingSchedule", ""));
+				m_coolSched.fromJson(json, getResources());
+			}
+			updateDisplayFromCurrentSchedule();
+			return true;
+		}
 
-            case R.id.menuSchedOptionsMakeLocalCopy:
-            {
-                if (this.validateEntries())
-                {
-                    updateScheduleFromCurrentDisplay();
-                    SharedPreferences.Editor ed = getPreferences(
-                            Context.MODE_PRIVATE).edit();
-                    Json json = new Json();
-                    if (m_whichSked == ThermostatSchedule.schedule_t.HEAT_SCHEDULE)
-                    {
-                        m_heatSched.toJson(json);
-                        ed.putString("heatingSchedule", json.toString());
-                    } else if (m_whichSked == ThermostatSchedule.schedule_t.COOL_SCHEDULE)
-                    {
-                        m_coolSched.toJson(json);
-                        ed.putString("coolingSchedule", json.toString());
-                    }
-                    ed.commit();
-                }
-            }
-            return true;
-            case R.id.menuSchedOptionsUseLocalCopy:
-            {
-                SharedPreferences sp = getPreferences(Context.MODE_PRIVATE);
-                Json json = new Json();
-                if (m_whichSked == ThermostatSchedule.schedule_t.HEAT_SCHEDULE)
-                {
-                    json.fromString(sp.getString("heatingSchedule", ""));
-                    m_heatSched.fromJson(json, getResources());
-                } else if (m_whichSked == ThermostatSchedule.schedule_t.COOL_SCHEDULE)
-                {
-                    json.fromString(sp.getString("coolingSchedule", ""));
-                    m_coolSched.fromJson(json, getResources());
-                }
-                updateDisplayFromCurrentSchedule();
-            }
-            return true;
-            default:
-                break;
-        }
         return super.onOptionsItemSelected(item);
     }
 

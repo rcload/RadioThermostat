@@ -1,19 +1,14 @@
 package com.w5xd.PocketThermostat;
 
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Vector;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.os.Bundle;
-import android.os.Handler;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +19,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Vector;
 
 public class MainActivity extends Activity implements OnClickListener
 {
@@ -109,19 +108,19 @@ public class MainActivity extends Activity implements OnClickListener
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.menuOptionsClearConfirm:
-                clearPrevUrls();
-                return true;
-            case R.id.menuOptionsC:
-                changeUnits(TemperatureUnits.UNITS_CELSIUS);
-                 return true;
-            case R.id.menuOptionsF:
-                changeUnits(TemperatureUnits.UNITS_FAHRENHEIT);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int itemId = item.getItemId();
+
+        if(itemId == R.id.menuOptionsClearConfirm){
+            clearPrevUrls();
+            return true;
+        } else if(itemId == R.id.menuOptionsC){
+            changeUnits(TemperatureUnits.UNITS_CELSIUS);
+            return true;
+        } else if(itemId == R.id.menuOptionsF){
+            changeUnits(TemperatureUnits.UNITS_FAHRENHEIT);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
     

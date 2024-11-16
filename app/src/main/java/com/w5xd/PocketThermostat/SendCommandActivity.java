@@ -3,18 +3,17 @@ package com.w5xd.PocketThermostat;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.content.DialogInterface;
-import android.content.Intent;
 
 import java.text.NumberFormat;
 
@@ -89,21 +88,19 @@ public class SendCommandActivity extends Activity implements OnTouchListener
 	{
 
 		int id = v.getId();
-		switch (id)
-		{
-		case R.id.spinnerFmode:
+		if(id == R.id.spinnerFmode){
 			showDialog(DLG_FAN_MODE);
 			return true;
-		case R.id.spinnerHmode:
+		} else if(id == R.id.spinnerHmode){
 			if (getTarget() >= 0)
 				showDialog(DLG_HOLD_MODE);
 			return true;
-		case R.id.spinnerTmode:
+		} else if(id == R.id.spinnerTmode){
 			showDialog(DLG_HVAC_MODE);
 			return true;
-		case R.id.buttonThermometerName:
-		    showDialog(DLG_UPDATE_NAME);
-		    return true;
+		} else if(id == R.id.buttonThermometerName){
+			showDialog(DLG_UPDATE_NAME);
+			return true;
 		}
 		return false;
 	}
@@ -127,51 +124,40 @@ public class SendCommandActivity extends Activity implements OnTouchListener
 	
 	protected Dialog onCreateDialog(int id) {
 	    Spinner s;
-	   	    switch(id) {
-	    case DLG_HVAC_MODE:
-	    	s = (Spinner)findViewById(R.id.spinnerTmode);
-	    	return spinnerToDialog(s, m_thermostatState.m_hvacMode);
 
-	    case DLG_FAN_MODE:
-	    	s = (Spinner)findViewById(R.id.spinnerFmode);
-	    	return spinnerToDialog(s, m_thermostatState.m_fanMode);
+		if(id == DLG_HVAC_MODE){
+			s = (Spinner)findViewById(R.id.spinnerTmode);
+			return spinnerToDialog(s, m_thermostatState.m_hvacMode);
+		} else if(id == DLG_FAN_MODE){
+			s = (Spinner)findViewById(R.id.spinnerFmode);
+			return spinnerToDialog(s, m_thermostatState.m_fanMode);
+		} else if(id == DLG_HOLD_MODE){
+			s = (Spinner)findViewById(R.id.spinnerHmode);
+			return spinnerToDialog(s, m_thermostatState.m_hold);
+		} else if(id == DLG_UPDATE_NAME){
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.msgUpdateName);
+			builder.setPositiveButton(R.string.msgOK, new DialogInterface.OnClickListener(){
+				public void onClick(DialogInterface dialog, int id){updateThermometerName();}
+			});
+			builder.setNegativeButton(R.string.msgCancel, new DialogInterface.OnClickListener(){
+				public void onClick(DialogInterface dialog, int id){dialog.cancel();}
+			});
+			return builder.create();
+		}
 
-	    case DLG_HOLD_MODE:
-	    	s = (Spinner)findViewById(R.id.spinnerHmode);
-	    	return spinnerToDialog(s, m_thermostatState.m_hold);
-	    	
-	    case DLG_UPDATE_NAME:
-	        { 
-	            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	            builder.setMessage(R.string.msgUpdateName);
-	            builder.setPositiveButton(R.string.msgOK, new DialogInterface.OnClickListener(){
-	                public void onClick(DialogInterface dialog, int id){updateThermometerName();}
-	            });
-	            builder.setNegativeButton(R.string.msgCancel, new DialogInterface.OnClickListener(){
-	                public void onClick(DialogInterface dialog, int id){dialog.cancel();}
-	            });
-	            return builder.create();
-	        
-	        }
-
-	    }
 	    return null;
 	}	
 	
 	private void spinnerCommand(int whichSpinner, int pos)
 	{
 		boolean success = false;
-		switch (whichSpinner)
-		{
-		case R.id.spinnerHmode:
+		if(whichSpinner == R.id.spinnerHmode){
 			success = setHoldMode(pos);
-			break;
-		case R.id.spinnerFmode:
+		} else if(whichSpinner == R.id.spinnerFmode){
 			success = setFanMode(pos);
-			break;
-		case R.id.spinnerTmode:
+		} else if(whichSpinner == R.id.spinnerTmode) {
 			success = setHvacMode(pos);
-			break;
 		}
 		
 		if (success) 

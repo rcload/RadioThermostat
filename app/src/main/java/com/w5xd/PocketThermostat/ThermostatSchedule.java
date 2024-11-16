@@ -1,7 +1,7 @@
 package com.w5xd.PocketThermostat;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import android.content.res.Resources;
+import android.net.http.AndroidHttpClient;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -14,8 +14,8 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 
-import android.content.res.Resources;
-import android.net.http.AndroidHttpClient;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /*
  * Class to represent a week of the thermostat's schedule
